@@ -6,12 +6,10 @@ namespace GameOfLife
 {
     public partial class Form1 : Form
     {
-        private int currentGeneration = 0;
+        
         private Graphics _graphis;
         private int _resolution;
-        private bool[,] field;
-        private int _rows;
-        private int _cols;
+        private GameEngine _gameEngine;
 
         public Form1()
         {
@@ -23,22 +21,22 @@ namespace GameOfLife
             if (timer1.Enabled)
                 return;
 
+            
+           
 
-            currentGeneration = 0;
-            Text = $"Generation: {currentGeneration}";
             nudResolution.Enabled = false;
             nudDensity.Enabled = false;
-
             _resolution = (int)nudResolution.Value;
-            _rows = pictureBox1.Height / _resolution;
-            _cols = pictureBox1.Width / _resolution;
-            field = new bool[_cols, _rows];
 
-            Random random = new Random();
+            _gameEngine = new GameEngine
+                (
+                    rows: pictureBox1.Height / _resolution,
+                    cols: pictureBox1.Width / _resolution,
+                    (int)nudDensity.Value
+                );
+           
+            Text = $"Generation: {_gameEngine.CurrentGeneration}";
 
-            for (int x = 0; x < _cols; x++)
-                for (int y = 0; y < _rows; y++)
-                    field[x, y] = random.Next((int)nudDensity.Value) == 0;
 
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             _graphis = Graphics.FromImage(pictureBox1.Image);
@@ -67,36 +65,16 @@ namespace GameOfLife
                         newField[x, y] = field[x, y];
 
                     if (hasLife)
-                        _graphis.FillRectangle(Brushes.Crimson, x * _resolution, y * _resolution, _resolution, _resolution);
+                        _graphis.FillRectangle(Brushes.Crimson, x * _resolution, y * _resolution, _resolution-1, _resolution-1);
                 }
             }
 
-            field = newField;
+            
             pictureBox1.Refresh();
-            Text = $"Generation: {++currentGeneration}";
+            Text = $"Generation: {_gameEngine.CurrentGeneration}";
         }
 
-        private int CountNeigbours(int x, int y)
-        {
-            int count = 0;
-
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    int col = (x + i + _cols) % _cols;
-                    int row = (y + j + _rows) % _rows;
-
-                    bool isSelfChecking = col == x && row == y;
-                    bool hasLife = field[col, row];
-
-                    if (hasLife && !isSelfChecking)
-                        count++;
-                }
-            }
-
-            return count;
-        }
+       
 
         private void StopGame()
         {
@@ -117,42 +95,42 @@ namespace GameOfLife
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (!timer1.Enabled)
-                return;
+        //    if (!timer1.Enabled)
+        //        return;
 
-            if (e.Button == MouseButtons.Left)
-            {
-                var x = e.Location.X / _resolution;
-                var y = e.Location.Y / _resolution;
+        //    if (e.Button == MouseButtons.Left)
+        //    {
+        //        var x = e.Location.X / _resolution;
+        //        var y = e.Location.Y / _resolution;
 
-                var validationPassed = ValidateMousePosition(x, y);
-                if (validationPassed)
-                    field[x, y] = true;
+        //        var validationPassed = ValidateMousePosition(x, y);
+        //        if (validationPassed)
+        //            field[x, y] = true;
                  
              
-            }
+        //    }
 
-            if (e.Button == MouseButtons.Right)
-            {
-                var x = e.Location.X / _resolution;
-                var y = e.Location.Y / _resolution;
+        //    if (e.Button == MouseButtons.Right)
+        //    {
+        //        var x = e.Location.X / _resolution;
+        //        var y = e.Location.Y / _resolution;
                 
-                var validationPassed = ValidateMousePosition(x, y);
-                if (validationPassed)
-                    field[x, y] = false;
+        //        var validationPassed = ValidateMousePosition(x, y);
+        //        if (validationPassed)
+        //            field[x, y] = false;
 
-            }
+        //    }
 
         }
 
-        private bool ValidateMousePosition(int x, int y)
-        {
-            return x>=0 && y >=0 && x< _cols && y < _rows;
-        }
+        //private bool ValidateMousePosition(int x, int y)
+        //{
+        //    return x>=0 && y >=0 && x< _cols && y < _rows;
+        //}
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            Text = $"Generation: {currentGeneration}";
+            Text = $"Generation: {_gameEngine.CurrentGeneration}";
         }
     }
 }
