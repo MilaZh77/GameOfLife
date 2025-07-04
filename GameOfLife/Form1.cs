@@ -32,7 +32,7 @@ namespace GameOfLife
                 (
                     rows: pictureBox1.Height / _resolution,
                     cols: pictureBox1.Width / _resolution,
-                    (int)nudDensity.Value
+                    density: (int)(nudDensity.Minimum) + (int)(nudDensity.Maximum) - (int)(nudDensity.Value)
                 );
            
             Text = $"Generation: {_gameEngine.CurrentGeneration}";
@@ -44,34 +44,26 @@ namespace GameOfLife
             timer1.Start();
         }
 
-        private void NextGeneration()
+        private void DrawNextGeneration()
         {
             _graphis.Clear(Color.Black);
 
-            var newField = new bool[_cols, _rows];
+            var field = _gameEngine.GetCurrentGeneration();
 
-            for (int x = 0; x < _cols; x++)
+            for (int x = 0; x < field.GetLength(0); x++)
             {
-                for (int y = 0; y < _rows; y++)
+                for (int y = 0; y < field.GetLength(1); y++)
                 {
-                    var neighboursCount = CountNeigbours(x, y);
-                    var hasLife = field[x, y];
-
-                    if (!hasLife && neighboursCount == 3)
-                        newField[x, y] = true;
-                    else if (neighboursCount < 2 || neighboursCount > 3)
-                        newField[x, y] = false;
-                    else
-                        newField[x, y] = field[x, y];
-
-                    if (hasLife)
-                        _graphis.FillRectangle(Brushes.Crimson, x * _resolution, y * _resolution, _resolution-1, _resolution-1);
+                    if (field[x,y])
+                    {
+                        _graphis.FillRectangle(Brushes.Crimson, x * _resolution, y * _resolution, _resolution - 1, _resolution - 1);
+                    }
                 }
             }
 
-            
             pictureBox1.Refresh();
             Text = $"Generation: {_gameEngine.CurrentGeneration}";
+            _gameEngine.NextGeneration();
         }
 
        
@@ -87,7 +79,7 @@ namespace GameOfLife
             nudDensity.Enabled = true;
         }
 
-        private void timer1_Tick(object sender, System.EventArgs e) => NextGeneration();
+        private void timer1_Tick(object sender, System.EventArgs e) => DrawNextGeneration();
 
         private void bStart_Click(object sender, System.EventArgs e) => StartGame();
 
@@ -95,42 +87,27 @@ namespace GameOfLife
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
-        //    if (!timer1.Enabled)
-        //        return;
+            if (!timer1.Enabled)
+                return;
 
-        //    if (e.Button == MouseButtons.Left)
-        //    {
-        //        var x = e.Location.X / _resolution;
-        //        var y = e.Location.Y / _resolution;
+            if (e.Button == MouseButtons.Left)
+            {
+                var x = e.Location.X / _resolution;
+                var y = e.Location.Y / _resolution;
+                _gameEngine.AddCell(x, y);
 
-        //        var validationPassed = ValidateMousePosition(x, y);
-        //        if (validationPassed)
-        //            field[x, y] = true;
-                 
-             
-        //    }
+            }
 
-        //    if (e.Button == MouseButtons.Right)
-        //    {
-        //        var x = e.Location.X / _resolution;
-        //        var y = e.Location.Y / _resolution;
-                
-        //        var validationPassed = ValidateMousePosition(x, y);
-        //        if (validationPassed)
-        //            field[x, y] = false;
+            if (e.Button == MouseButtons.Right)
+            {
+                var x = e.Location.X / _resolution;
+                var y = e.Location.Y / _resolution;
+                _gameEngine.RemoveCell(x, y);
 
-        //    }
+            }
 
         }
 
-        //private bool ValidateMousePosition(int x, int y)
-        //{
-        //    return x>=0 && y >=0 && x< _cols && y < _rows;
-        //}
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            Text = $"Generation: {_gameEngine.CurrentGeneration}";
-        }
     }
 }
