@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+
 using static System.Net.Mime.MediaTypeNames;
 
 namespace GameOfLife
@@ -12,11 +12,11 @@ namespace GameOfLife
     public class GameEngine
     {
         public uint CurrentGeneration { get; private set; }
-        
+
         private bool[,] field;
         private readonly int _rows;
         private readonly int _cols;
-        
+
 
         public GameEngine(int rows, int cols, int density)
         {
@@ -32,7 +32,7 @@ namespace GameOfLife
 
         public void NextGeneration()
         {
-           
+
             var newField = new bool[_cols, _rows];
 
             for (int x = 0; x < _cols; x++)
@@ -56,9 +56,9 @@ namespace GameOfLife
 
         }
 
-        public bool [,] GetCurrentGeneration ()
+        public bool[,] GetCurrentGeneration()
         {
-         
+
             var result = new bool[_cols, _rows];
 
             for (int x = 0; x < _cols; x++)
@@ -67,7 +67,7 @@ namespace GameOfLife
 
             return result;
         }
-        
+
         private int CountNeigbours(int x, int y)
         {
             int count = 0;
@@ -92,13 +92,13 @@ namespace GameOfLife
             return x >= 0 && y >= 0 && x < _cols && y < _rows;
         }
 
-        private void UpdateCell (int x, int y, bool state)
+        private void UpdateCell(int x, int y, bool state)
         {
             if (ValidateCellPosition(x, y))
                 field[x, y] = state;
         }
 
-        public void AddCell (int x, int y)
+        public void AddCell(int x, int y)
         {
             UpdateCell(x, y, state: true);
         }

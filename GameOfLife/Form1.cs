@@ -15,14 +15,10 @@ namespace GameOfLife
         {
             InitializeComponent();
         }
-
         private void StartGame()
         {
             if (timer1.Enabled)
                 return;
-
-            
-           
 
             nudResolution.Enabled = false;
             nudDensity.Enabled = false;
@@ -36,7 +32,6 @@ namespace GameOfLife
                 );
            
             Text = $"Generation: {_gameEngine.CurrentGeneration}";
-
 
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             _graphis = Graphics.FromImage(pictureBox1.Image);
@@ -66,15 +61,12 @@ namespace GameOfLife
             _gameEngine.NextGeneration();
         }
 
-       
-
         private void StopGame()
         {
             if (!timer1.Enabled)
                 return;
 
             timer1.Stop();
-
             nudResolution.Enabled = true;
             nudDensity.Enabled = true;
         }
@@ -95,7 +87,6 @@ namespace GameOfLife
                 var x = e.Location.X / _resolution;
                 var y = e.Location.Y / _resolution;
                 _gameEngine.AddCell(x, y);
-
             }
 
             if (e.Button == MouseButtons.Right)
@@ -103,7 +94,6 @@ namespace GameOfLife
                 var x = e.Location.X / _resolution;
                 var y = e.Location.Y / _resolution;
                 _gameEngine.RemoveCell(x, y);
-
             }
 
         }
