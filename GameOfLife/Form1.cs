@@ -65,9 +65,6 @@ namespace GameOfLife
             Text = $"Generation: {_gameEngine.CurrentGeneration}";
             _gameEngine.NextGeneration();
         }
-
-       
-
         private void StopGame()
         {
             if (!timer1.Enabled)
@@ -108,6 +105,9 @@ namespace GameOfLife
 
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
+        }
     }
 }
